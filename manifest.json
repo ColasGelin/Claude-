@@ -1,0 +1,30 @@
+{
+  "manifest_version": 3,
+  "name": "Claude Coding Assistant",
+  "version": "1.0.0",
+  "description": "Quick prompts for better coding with Claude AI",
+  
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage"
+  ],
+  
+  "host_permissions": [
+    "https://claude.ai/*"
+  ],
+  
+  "content_scripts": [
+    {
+      "matches": ["https://claude.ai/*", "https://chatgpt.com/*"],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_end"
+    }
+  ],
+  
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Claude Coding Assistant"
+  }
+}
