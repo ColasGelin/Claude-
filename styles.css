@@ -7,7 +7,7 @@
   position: fixed;
   top: 20px;
   right: 20px;
-  width: 300px;
+  width: 320px;
   background: #f5f5f5;
   border: 1px solid #ddd;
   border-radius: 8px;
@@ -83,8 +83,8 @@
 .prompt-content {
   display: flex;
   align-items: center;
-  gap: 8px;
-  flex: 1;
+  justify-content: space-between;
+  width: 100%;
 }
 
 .button-actions {
@@ -243,12 +243,38 @@
 .panel-content::-webkit-scrollbar-thumb:hover {
   background: #bbb;
 }
+.drag-handle {
+  background: transparent;
+  border: none;
+  color: #ccc;
+  width: 20px;
+  height: 24px;
+  cursor: grab;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 8px;
+  transition: color 0.2s ease;
+}
+
+.drag-handle:hover {
+  color: #666;
+}
+
+.drag-handle:active {
+  cursor: grabbing;
+}
 
 .prompt-item {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 0px; /* Remove gap since drag handle is now part of the layout */
   margin-bottom: 8px;
+}
+
+.dragging {
+  transform: rotate(2deg);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
 .prompt-btn {
@@ -270,4 +296,205 @@
 
 .add-prompt-btn:hover {
   background: #0056b3;
+}
+
+.shortcut-indicator {
+  background: #e9ecef;
+  color: #6c757d;
+  padding: 2px 6px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+.shortcut-btn {
+  background: transparent;
+  border: none;
+  color: #666;
+  width: 24px;
+  height: 24px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.shortcut-btn:hover {
+  background: #f0f0f0;
+  color: #28a745;
+}
+
+/* Shortcut Modal Styles */
+.shortcut-modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shortcut-modal-backdrop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+}
+
+.shortcut-modal-content {
+  background: white;
+  border-radius: 8px;
+  padding: 20px;
+  min-width: 300px;
+  position: relative;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+.shortcut-modal-content h3 {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-size: 16px;
+}
+
+.shortcut-modal-content p {
+  margin: 0 0 16px 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.shortcut-options {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+}
+
+.shortcut-option {
+  background: white;
+  border: 1px solid #ddd;
+  color: #333;
+  padding: 10px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.2s ease;
+  text-align: left;
+}
+
+.shortcut-option:hover {
+  background: #f8f9fa;
+  border-color: #007acc;
+}
+
+.shortcut-modal-buttons {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.shortcut-modal-btn {
+  padding: 8px 16px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  font-size: 12px;
+  cursor: pointer;
+  background: white;
+  color: #333;
+  transition: all 0.2s ease;
+}
+
+.shortcut-modal-btn:hover {
+  background: #f8f9fa;
+}
+
+.shortcut-modal-btn.remove {
+  background: #dc3545;
+  color: white;
+  border-color: #dc3545;
+}
+
+.shortcut-modal-btn.remove:hover {
+  background: #c82333;
+}
+
+.inline-edit-form {
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 12px;
+  margin: 8px 0;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.inline-edit-form h4 {
+  margin: 0 0 8px 0;
+  color: #333;
+  font-size: 14px;
+}
+
+.inline-edit-form .inline-prompt-text,
+.inline-edit-form .inline-prompt-name,
+.inline-edit-form .inline-prompt-color {
+  width: 100%;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 6px 8px;
+  color: #333;
+  font-size: 12px;
+  margin-bottom: 6px;
+  box-sizing: border-box;
+  font-family: inherit;
+}
+
+.inline-edit-form .inline-prompt-text:focus,
+.inline-edit-form .inline-prompt-name:focus,
+.inline-edit-form .inline-prompt-color:focus {
+  outline: none;
+  border-color: #007acc;
+}
+
+.toolbar-section {
+  display: flex;
+  gap: 6px;
+  margin-bottom: 12px;
+  padding: 8px;
+  background: #f8f9fa;
+  border-radius: 4px;
+  border: 1px solid #e9ecef;
+}
+
+.toolbar-btn {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  background: white;
+  border: 1px solid #ddd;
+  color: #666;
+  padding: 6px 8px;
+  border-radius: 3px;
+  cursor: pointer;
+  font-size: 11px;
+  transition: all 0.2s ease;
+  flex: 1;
+  justify-content: center;
+}
+
+.toolbar-btn:hover {
+  background: #f8f9fa;
+  border-color: #007acc;
+  color: #007acc;
+}
+
+.toolbar-btn svg {
+  flex-shrink: 0;
 }
