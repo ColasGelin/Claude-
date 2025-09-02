@@ -1,9 +1,9 @@
 {
   "manifest_version": 3,
-  "name": "Claude Coding Assistant",
+  "name": "SpeedPrompt - AI prompting at its fastest",
   "version": "1.0.0",
-  "description": "Quick prompts for better coding with Claude AI",
-  
+  "description": "Quick prompts for better coding with SpeedPrompt AI",
+
   "permissions": [
     "activeTab",
     "scripting",

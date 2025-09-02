@@ -415,7 +415,7 @@ function createButtonPanel() {
       button.className = 'prompt-btn-container';
      button.innerHTML = `
   <div class="prompt-item">
-    <button class="prompt-btn" data-prompt="${key}" title="Toggle: ${prompt.text}" style="border-color: ${prompt.color || '#4f46e5'};">
+    <button class="prompt-btn" data-prompt="${key}" title="Toggle: ${prompt.text}" style="border-color: '#4f46e5';">
       <span class="prompt-content">
         ${prompt.name}
         ${getShortcutForPrompt(key) ? `<span class="shortcut-indicator">Alt+${getShortcutForPrompt(key)}</span>` : ''}
