@@ -1,5 +1,5 @@
 // content.js - Auto-insert prompts with custom prompt management
-console.log('Claude Coding Assistant loaded!');
+console.log('Coding Assistant loaded!');
 
 function initLucideIcons() {
   if (typeof lucide !== 'undefined') {
@@ -58,6 +58,15 @@ const storage = {
 let customPrompts = {};
 let activePrompts = new Set();
 let currentSite = 'unknown'; // Add this line
+
+// Predefined color options
+const COLOR_PRESETS = [
+  { name: 'Blue', value: '#8b7355' },
+  { name: 'Green', value: '#7a8471' },
+  { name: 'Purple', value: '#8b7a94' },
+  { name: 'Orange', value: '#c4956c' },
+  { name: 'Red', value: '#c4756c' }
+];
 
 // Load custom prompts from storage
 async function loadCustomPrompts() {
@@ -211,15 +220,32 @@ function makeDraggable(element, dragHandle) {
   }
 }
 
+// Create color selector HTML
+function createColorSelector(selectedColor = COLOR_PRESETS[0].value, idPrefix = 'prompt-color') {
+  return `
+    <div class="color-selector">
+      ${COLOR_PRESETS.map(color => `
+        <button type="button" class="color-option ${selectedColor === color.value ? 'selected' : ''}" 
+                data-color="${color.value}" 
+                style="background-color: ${color.value};" 
+                title="${color.name}"
+                data-target="${idPrefix}">
+        </button>
+      `).join('')}
+      <input type="hidden" id="${idPrefix}" value="${selectedColor}">
+    </div>
+  `;
+}
+
 // Create the floating button panel
 function createButtonPanel() {
   const panel = document.createElement('div');
   panel.id = 'claude-coding-panel';
   panel.innerHTML = `
     <div class="panel-header">
-        <span>Auto Prompts</span>
+        <span>Speed Prompts</span>
         <div class="header-controls">
-        <button class="control-btn" id="toggle-panel" title="Minimize/expand panel">−</button>
+        <button class="control-btn" id="toggle-panel" title="Toggle panel">⚡</button>
         </div>
     </div>
     <div class="panel-content" id="panel-content">
@@ -249,7 +275,10 @@ function createButtonPanel() {
         <textarea id="prompt-text" placeholder="Enter your prompt text..." rows="4"></textarea>
         <div class="form-row">
             <input type="text" id="prompt-name" placeholder="Prompt name" maxlength="20" style="flex: 1;">
-            <input type="color" id="prompt-color" value="#4f46e5" title="Choose prompt color" style="width: 50px; margin-left: 10px;">
+            <div class="color-input-wrapper" style="margin-left: 10px;">
+              <label style="font-size: 12px; color: #6b6354; margin-bottom: 4px; display: block;">Color:</label>
+              ${createColorSelector()}
+            </div>
         </div>
         <div class="form-buttons">
             <button class="form-btn cancel" id="cancel-add">Cancel</button>
@@ -276,6 +305,33 @@ function createButtonPanel() {
     #claude-coding-panel .panel-header:active {
       cursor: grabbing !important;
     }
+    .color-selector {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+    .color-option {
+      width: 24px;
+      height: 24px;
+      border: 2px solid transparent;
+      border-radius: 50%;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    .color-option:hover {
+      transform: scale(1.1);
+      border-color: #8b7355;
+    }
+    .color-option.selected {
+      border-color: #8b7355;
+      transform: scale(1.15);
+      box-shadow: 0 0 0 2px rgba(139, 115, 85, 0.3);
+    }
+    .color-input-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
   `;
   const dragStyleSheet = document.createElement('style');
   dragStyleSheet.textContent = dragStyles;
@@ -299,6 +355,33 @@ function createButtonPanel() {
   const cancelAddBtn = document.getElementById('cancel-add');
   const savePromptBtn = document.getElementById('save-prompt');
   
+  // Setup color selector functionality
+  function setupColorSelectors() {
+    document.addEventListener('click', (e) => {
+      if (e.target.classList.contains('color-option')) {
+        const color = e.target.dataset.color;
+        const targetId = e.target.dataset.target;
+        const hiddenInput = document.getElementById(targetId);
+        
+        // Update hidden input
+        if (hiddenInput) {
+          hiddenInput.value = color;
+        }
+        
+        // Update visual selection
+        const container = e.target.closest('.color-selector');
+        if (container) {
+          container.querySelectorAll('.color-option').forEach(option => {
+            option.classList.remove('selected');
+          });
+          e.target.classList.add('selected');
+        }
+      }
+    });
+  }
+  
+  setupColorSelectors();
+  
     addPromptBtn.addEventListener('click', () => {
     // Move the form right after the add button
     addPromptBtn.after(addPromptForm);
@@ -318,7 +401,7 @@ function createButtonPanel() {
   savePromptBtn.addEventListener('click', async () => {
     const text = promptTextInput.value.trim();
     const name = promptNameInput.value.trim();
-    const color = promptColorInput.value || '#4f46e5'; // Default color
+    const color = promptColorInput.value || COLOR_PRESETS[0].value;
     
     if (!text) {
       alert('Please enter prompt text');
@@ -368,7 +451,17 @@ function createButtonPanel() {
   function clearForm() {
     promptTextInput.value = '';
     promptNameInput.value = '';
-    promptColorInput.value = '#4f46e5'; // Reset to default color
+    promptColorInput.value = COLOR_PRESETS[0].value;
+    
+    // Reset color selector visual state
+    const colorOptions = addPromptForm.querySelectorAll('.color-option');
+    colorOptions.forEach((option, index) => {
+      if (index === 0) {
+        option.classList.add('selected');
+      } else {
+        option.classList.remove('selected');
+      }
+    });
   }
   
   // Toggle panel minimize/expand
@@ -376,12 +469,12 @@ function createButtonPanel() {
     isPanelExpanded = !isPanelExpanded;
     
     if (isPanelExpanded) {
-      content.style.display = 'block';
-      togglePanelBtn.textContent = '−';
-      togglePanelBtn.title = 'Minimize panel';
+      panel.classList.remove('collapsed');
+      togglePanelBtn.textContent = '⚡';
+      togglePanelBtn.title = 'Collapse to square';
     } else {
-      content.style.display = 'none';
-      togglePanelBtn.textContent = '+';
+      panel.classList.add('collapsed');
+      togglePanelBtn.textContent = '⚡';
       togglePanelBtn.title = 'Expand panel';
     }
   });
@@ -415,7 +508,7 @@ function createButtonPanel() {
       button.className = 'prompt-btn-container';
      button.innerHTML = `
   <div class="prompt-item">
-    <button class="prompt-btn" data-prompt="${key}" title="Toggle: ${prompt.text}" style="border-color: '#4f46e5';">
+    <button class="prompt-btn" data-prompt="${key}" title="Toggle: ${prompt.text}" style="border-color: '${prompt.color || COLOR_PRESETS[0].value}';">
       <span class="prompt-content">
         ${prompt.name}
         ${getShortcutForPrompt(key) ? `<span class="shortcut-indicator">Alt+${getShortcutForPrompt(key)}</span>` : ''}
@@ -461,7 +554,7 @@ function createButtonPanel() {
     buttons.forEach(btn => {
       const promptKey = btn.dataset.prompt;
       const prompt = customPrompts[promptKey];
-      const color = prompt?.color || '#4f46e5';
+      const color = prompt?.color || COLOR_PRESETS[0].value;
       
       if (activePrompts.has(promptKey)) {
         btn.classList.add('active');
@@ -616,7 +709,10 @@ modal.addEventListener('click', async (e) => {
             <textarea class="inline-prompt-text" placeholder="Enter your prompt text..." rows="4">${prompt.text}</textarea>
             <div class="form-row">
             <input type="text" class="inline-prompt-name" placeholder="Prompt name" maxlength="20" value="${prompt.name}" style="flex: 1;">
-            <input type="color" class="inline-prompt-color" value="${prompt.color || '#4f46e5'}" title="Choose prompt color" style="width: 50px; margin-left: 10px;">
+            <div class="color-input-wrapper" style="margin-left: 10px;">
+              <label style="font-size: 12px; color: #6b6354; margin-bottom: 4px; display: block;">Color:</label>
+              ${createColorSelector(prompt.color || COLOR_PRESETS[0].value, 'inline-prompt-color')}
+            </div>
             </div>
             <div class="form-buttons">
             <button class="form-btn cancel inline-cancel">Cancel</button>
@@ -641,7 +737,7 @@ modal.addEventListener('click', async (e) => {
             if (e.target.classList.contains('inline-save')) {
             const text = inlineForm.querySelector('.inline-prompt-text').value.trim();
             const name = inlineForm.querySelector('.inline-prompt-name').value.trim();
-            const color = inlineForm.querySelector('.inline-prompt-color').value || '#4f46e5';
+            const color = inlineForm.querySelector('#inline-prompt-color').value || COLOR_PRESETS[0].value;
             
             if (!text) {
                 alert('Please enter prompt text');

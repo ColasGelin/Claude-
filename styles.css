@@ -552,3 +552,37 @@
 .toolbar-btn svg {
   flex-shrink: 0;
 }
+
+/* Add this to your CSS */
+#claude-coding-panel.collapsed {
+  width: 50px;
+  height: 50px;
+  overflow: hidden;
+}
+
+#claude-coding-panel.collapsed .panel-header {
+  padding: 12px;
+  justify-content: center;
+}
+
+#claude-coding-panel.collapsed .panel-header span {
+  display: none;
+}
+
+#claude-coding-panel.collapsed .panel-content {
+  display: none;
+}
+
+#claude-coding-panel.collapsed .header-controls {
+  display: flex;
+}
+
+#claude-coding-panel.collapsed #toggle-panel {
+  background: linear-gradient(135deg, #8b7355 0%, #786247 100%);
+  color: #faf9f6;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  border: none;
+  font-size: 16px;
+}

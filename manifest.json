@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "SpeedPrompt - AI prompting at its fastest",
   "version": "1.0.0",
-  "description": "Quick prompts for better coding with SpeedPrompt AI",
+  "description": "Quick custom prompts for your AI repetitive tasks.",
 
   "permissions": [
     "activeTab",
